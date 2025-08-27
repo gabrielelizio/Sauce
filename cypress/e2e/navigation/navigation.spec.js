@@ -6,9 +6,12 @@ describe('Navegação por menus', () => {
   });
 
   it.only('Navegar até Home e validar comentário', () => {
-  cy.goHome();
-  cy.url({ timeout: 30000 }).should('include', 'saucelabs.com');
-  cy.contains('Chuan Au', { timeout: 30000 }).should('be.visible');
+    cy.goHome();
+    cy.origin('https://saucelabs.com', () => {
+      cy.contains('button', 'OK').click();
+      cy.url({ timeout: 30000 }).should('include', 'saucelabs.com');
+      cy.contains('Chuan Au', { timeout: 30000 }).should('be.visible');
+    });
   });
 
   it('Deve exibir menu e opções após login', () => {
