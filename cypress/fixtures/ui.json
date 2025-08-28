@@ -1,0 +1,22 @@
+{
+  "titles": {
+    "products": "Products",
+    "cart": "Your Cart",
+    "checkout": "Checkout: Your Information"
+  },
+  "menu": {
+    "home": "Home",
+    "about": "About",
+    "logout": "Logout"
+  },
+  "comments": {
+    "userComment": "Chuan Au"
+  },
+  "elements": {
+    "menuButton": "#react-burger-menu-btn",
+    "cart": ".shopping_cart_link",
+    "checkout": "[data-test='checkout']",
+    "continueButton": "[data-test='continue']",
+    "finishButton": "[data-test='finish']"
+  }
+}

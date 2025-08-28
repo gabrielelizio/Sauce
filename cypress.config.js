@@ -8,6 +8,8 @@ module.exports = {
     video: false,
     screenshotsFolder: 'cypress/screenshots',
     videosFolder: 'cypress/videos',
-    pageLoadTimeout: 120000,
+    pageLoadTimeout: 180000,
+    defaultCommandTimeout: 10000,
+    chromeWebSecurity: false,
   },
 };

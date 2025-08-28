@@ -1,16 +1,27 @@
+/**
+ * Comandos de navegação utilizando fixtures para elementos UI
+ */
+
+// Carrega os elementos UI uma única vez
+let uiElements;
+before(() => {
+  cy.fixture('ui.json').then((ui) => {
+    uiElements = ui;
+  });
+});
+
 Cypress.Commands.add('clicarAboutEValidarUrl', () => {
-  cy.findByRole('button', { name: 'Open Menu' }).click();
-  cy.findByRole('link', { name: 'About' })
+  cy.get(uiElements.elements.menuButton).click();
+  cy.findByRole('link', { name: uiElements.menu.about })
     .invoke('removeAttr', 'target')
     .click();
   cy.url().should('eq', 'https://saucelabs.com/');
 });
+
 Cypress.Commands.add('openMenu', () => {
-  
-  cy.get('#react-burger-menu-btn', { timeout: 10000 })
+  cy.get(uiElements.elements.menuButton, { timeout: 10000 })
     .should('be.visible')
     .click({ force: true });
- 
 });
 
 Cypress.Commands.add('goHome', () => {
@@ -21,6 +32,7 @@ Cypress.Commands.add('goHome', () => {
     .invoke('removeAttr', 'target')
     .click({ force: true });
 });
+
 // Valida acesso negado à página restrita inventory.html
 Cypress.Commands.add('validarAcessoNegadoInventory', () => {
   cy.visit('/inventory.html', { failOnStatusCode: false });

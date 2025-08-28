@@ -1,17 +1,34 @@
 describe('Checkout', () => {
+  let checkoutData;
+  let uiData;
+
+  before(() => {
+    // Carrega os dados de teste
+    cy.fixture('checkout.json').then((data) => {
+      checkoutData = data;
+    });
+    cy.fixture('ui.json').then((data) => {
+      uiData = data;
+    });
+  });
+
   beforeEach(() => {
     cy.visit('/');
     cy.loginComSucesso();
-    cy.get('.product_label, .title').should('contain', 'Products');
+    cy.get('.product_label, .title').should('contain', uiData.titles.products);
   });
-
 
   it('Fluxo de checkout de compra', () => {
     // Arrange & Act
-    cy.adicionarProdutoNoCarrinho('Test.allTheThings() T-Shirt (Red)');
-    cy.preencherCheckout('Nome', 'Sobrenome', '12345-678');
+    cy.adicionarProdutoNoCarrinho(checkoutData.products.tshirt.name);
+    cy.realizarCheckout({
+      firstName: checkoutData.customerData.firstName,
+      lastName: checkoutData.customerData.lastName,
+      postalCode: checkoutData.customerData.postalCode,
+      shouldFinish: true
+    });
     // Assert
-    cy.contains('Thank you for your order!').should('be.visible');
+    cy.contains(checkoutData.messages.success).should('be.visible');
   });
 
   it('Checkout sem preencher o nome', () => {

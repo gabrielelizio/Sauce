@@ -1,6 +1,22 @@
 {
   "valid": {
     "username": "standard_user",
-    "password": "secret_sauce"
+    "password": "secret_sauce",
+    "type": "standard"
+  },
+  "locked": {
+    "username": "locked_out_user",
+    "password": "secret_sauce",
+    "type": "locked"
+  },
+  "problem": {
+    "username": "problem_user",
+    "password": "secret_sauce",
+    "type": "problem"
+  },
+  "invalid": {
+    "username": "invalid_user",
+    "password": "wrong_password",
+    "type": "invalid"
   }
 }

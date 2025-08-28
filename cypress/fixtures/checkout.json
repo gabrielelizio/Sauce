@@ -1,0 +1,21 @@
+{
+  "customerData": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "postalCode": "12345-678"
+  },
+  "products": {
+    "tshirt": {
+      "name": "Test.allTheThings() T-Shirt (Red)",
+      "price": 15.99
+    }
+  },
+  "messages": {
+    "success": "Thank you for your order!",
+    "errors": {
+      "missingFirstName": "Error: First Name is required",
+      "missingLastName": "Error: Last Name is required",
+      "missingPostalCode": "Error: Postal Code is required"
+    }
+  }
+}
