@@ -3,3 +3,8 @@ cypress.env.json
 SCREENShots
 videos
 Desafio Técnico.pdf
+cypress/reports
+cypress/screenshots
+cypress/videos
+cypress/downloads
+mochawesome-report

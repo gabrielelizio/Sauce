@@ -33,8 +33,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Verify Cypress
-        run: npx cypress verify
+      - name: Install mochawesome tools
+        run: npm install -g mochawesome-merge mochawesome-report-generator
 
       - name: Create Reports Directory
         run: |
@@ -67,9 +67,19 @@ jobs:
       - name: Generate Mochawesome Report
         if: always()
         run: |
-          npm install -g mochawesome-merge mochawesome-report-generator
-          npx mochawesome-merge cypress/reports/*.json > cypress/reports/full_report.json
-          npx marge cypress/reports/full_report.json -f report -o cypress/reports/html
+          # Usa o padrão correto para os arquivos JSON do mochawesome
+          npx mochawesome-merge cypress/reports/mochawesome*.json > cypress/reports/full_report.json
+          
+          # Verifica se o arquivo foi criado e não está vazio
+          if [ -s "cypress/reports/full_report.json" ]; then
+            npx marge cypress/reports/full_report.json -f report -o cypress/reports/html
+            echo "Report generated successfully"
+          else
+            echo "Warning: No test data found for report generation"
+            # Cria um relatório vazio válido para evitar erros
+            echo '{"stats": {"suites": 0, "tests": 0, "passes": 0, "pending": 0, "failures": 0}, "results": []}' > cypress/reports/full_report.json
+            echo '<!DOCTYPE html><html><head><title>No Test Data</title></head><body><h1>No test data available for report</h1></body></html>' > cypress/reports/html/report.html
+          fi
 
       - name: Upload Report Artifact
         if: always()
@@ -77,24 +87,33 @@ jobs:
         with:
           name: cypress-report
           path: cypress/reports/html
+          retention-days: 7
 
       - name: Upload screenshots
-        uses: actions/upload-artifact@v4
         if: failure()
+        uses: actions/upload-artifact@v4
         with:
           name: cypress-screenshots
           path: cypress/screenshots
           retention-days: 30
           if-no-files-found: ignore
-          compression-level: 9
+
+      - name: Upload videos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-videos
+          path: cypress/videos
+          retention-days: 30
+          if-no-files-found: ignore
 
       - name: Setup Pages for Report
         if: always() && github.event_name == 'push'
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@v4  
 
       - name: Upload Report to Pages
         if: always() && github.event_name == 'push'
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3  
         with:
           path: cypress/reports/html
 
@@ -111,4 +130,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v3 
