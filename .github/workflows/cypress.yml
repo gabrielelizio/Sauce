@@ -1,4 +1,4 @@
-name: Cypress Tests
+name: Cypress Tests com GitHub Pages
 
 on:
   push:
@@ -7,16 +7,18 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  actions: read
+  checks: write
+  issues: read
+  pull-requests: write
+
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
-    
-    permissions:
-      contents: read
-      actions: read
-      checks: write
-      issues: read
-      pull-requests: write
 
     steps:
       - name: Checkout
@@ -65,6 +67,7 @@ jobs:
       - name: Generate Mochawesome Report
         if: always()
         run: |
+          npm install -g mochawesome-merge mochawesome-report-generator
           npx mochawesome-merge cypress/reports/*.json > cypress/reports/full_report.json
           npx marge cypress/reports/full_report.json -f report -o cypress/reports/html
 
@@ -84,3 +87,28 @@ jobs:
           retention-days: 30
           if-no-files-found: ignore
           compression-level: 9
+
+      - name: Setup Pages for Report
+        if: always() && github.event_name == 'push'
+        uses: actions/configure-pages@v3
+
+      - name: Upload Report to Pages
+        if: always() && github.event_name == 'push'
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: cypress/reports/html
+
+  deploy-report:
+    if: github.event_name == 'push'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: cypress-run
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
