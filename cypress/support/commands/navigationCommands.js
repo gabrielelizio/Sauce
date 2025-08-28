@@ -12,9 +12,8 @@ before(() => {
 
 Cypress.Commands.add('clicarAboutEValidarUrl', () => {
   cy.get(uiElements.elements.menuButton).click();
-  cy.findByRole('link', { name: uiElements.menu.about })
-    .invoke('removeAttr', 'target')
-    .click();
+ cy.get('.bm-item-list a').contains('About').invoke('removeAttr', 'target').click({ force: true });
+
   cy.url().should('eq', 'https://saucelabs.com/');
 });
 

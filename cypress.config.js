@@ -18,5 +18,7 @@ module.exports = {
     pageLoadTimeout: 180000,
     defaultCommandTimeout: 10000,
     chromeWebSecurity: false,
+    experimentalStudio: true
+
   },
 };

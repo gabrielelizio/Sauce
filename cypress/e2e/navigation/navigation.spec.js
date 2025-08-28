@@ -16,15 +16,8 @@ describe('Navegação por menus', () => {
   });
 
   it.only('Navegar até Home e validar comentário', () => {
-    cy.get(uiData.elements.menuButton).click();
-    cy.get('#about_sidebar_link')
-      .should('be.visible')
-      .and('have.attr', 'href', 'https://saucelabs.com/');
-    cy.get('#about_sidebar_link')
-      .invoke('attr', 'href')
-      .should('eq', 'https://saucelabs.com/');
-      cy.goHome();
-      cy.origin('https://saucelabs.com', () => {
+    cy.clicarAboutEValidarUrl();
+    cy.origin('https://saucelabs.com', () => {
       cy.contains('button', 'OK').click();
       cy.url({ timeout: 3000 }).should('include', 'saucelabs.com');
       cy.contains('Chuan Au', { timeout: 30000 }).should('be.visible');
