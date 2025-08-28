@@ -25,10 +25,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
@@ -59,12 +59,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload screenshots
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: cypress-screenshots-${{ matrix.containers }}
           path: cypress/screenshots
+          retention-days: 30
           if-no-files-found: ignore
+          compression-level: 9
 
       - name: Generate test report
         if: always()
@@ -74,9 +76,11 @@ jobs:
           npx marge cypress/reports/full_report.json -f report -o cypress/reports
 
       - name: Upload test report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: cypress-report-${{ matrix.containers }}
           path: cypress/reports
+          retention-days: 30
           if-no-files-found: ignore
+          compression-level: 9
