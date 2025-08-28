@@ -1,5 +1,12 @@
 module.exports = {
   projectId: 'c9ky57',
+  reporter: 'mochawesome',
+  reporterOptions: {
+    reportDir: 'cypress/reports',
+    overwrite: false,
+    html: false,
+    json: true
+  },
   e2e: {
     baseUrl: 'https://www.saucedemo.com',
     supportFile: 'cypress/support/e2e.js',

@@ -34,6 +34,11 @@ jobs:
       - name: Verify Cypress
         run: npx cypress verify
 
+      - name: Create Reports Directory
+        run: |
+          mkdir -p cypress/reports
+          mkdir -p cypress/reports/html
+
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
@@ -44,11 +49,11 @@ jobs:
           record: true
           parallel: true
           group: 'UI Tests'
+          spec: cypress/e2e/**/*.spec.js
           config: >
             pageLoadTimeout=180000,
             defaultCommandTimeout=10000,
             chromeWebSecurity=false
-          spec: cypress/e2e/**/*.spec.js
         env:
           CYPRESS_USUARIO: ${{ secrets.CYPRESS_USUARIO }}
           CYPRESS_SENHA: ${{ secrets.CYPRESS_SENHA }}
@@ -56,29 +61,26 @@ jobs:
           CYPRESS_SENHAINCORRETA: ${{ secrets.CYPRESS_SENHAINCORRETA }}
           CYPRESS_USUARIOLOCKED: ${{ secrets.CYPRESS_USUARIOLOCKED }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+
+      - name: Generate Mochawesome Report
+        if: always()
+        run: |
+          npx mochawesome-merge cypress/reports/*.json > cypress/reports/full_report.json
+          npx marge cypress/reports/full_report.json -f report -o cypress/reports/html
+
+      - name: Upload Report Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-report
+          path: cypress/reports/html
+
       - name: Upload screenshots
         uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: cypress-screenshots
           path: cypress/screenshots
-          retention-days: 30
-          if-no-files-found: ignore
-          compression-level: 9
-
-      - name: Generate test report
-        if: always()
-        run: |
-          npm install -g mochawesome-merge mochawesome-report-generator
-          npx mochawesome-merge cypress/reports/*.json > cypress/reports/full_report.json
-          npx marge cypress/reports/full_report.json -f report -o cypress/reports
-
-      - name: Upload test report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: cypress-report
-          path: cypress/reports
           retention-days: 30
           if-no-files-found: ignore
           compression-level: 9
