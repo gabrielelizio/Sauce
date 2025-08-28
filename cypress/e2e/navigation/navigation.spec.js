@@ -15,18 +15,22 @@ describe('Navegação por menus', () => {
     cy.get('.product_label, .title').should('contain', uiData.titles.products);
   });
 
-  it('Navegar até Home e validar comentário', () => {
-    // Em vez de navegar direto, vamos abrir o menu e verificar o link
+  it.only('Navegar até Home e validar comentário', () => {
     cy.get(uiData.elements.menuButton).click();
     cy.get('#about_sidebar_link')
       .should('be.visible')
       .and('have.attr', 'href', 'https://saucelabs.com/');
-
-    // Validar que o link existe e está correto
     cy.get('#about_sidebar_link')
       .invoke('attr', 'href')
       .should('eq', 'https://saucelabs.com/');
+      cy.goHome();
+      cy.origin('https://saucelabs.com', () => {
+      cy.contains('button', 'OK').click();
+      cy.url({ timeout: 3000 }).should('include', 'saucelabs.com');
+      cy.contains('Chuan Au', { timeout: 30000 }).should('be.visible');
   });
+});
+
 
   it('Deve exibir menu e opções após login', () => {
     cy.get(uiData.elements.menuButton).should('be.visible');

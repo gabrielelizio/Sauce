@@ -24,7 +24,7 @@ Cypress.Commands.add('openMenu', () => {
     .click({ force: true });
 });
 
-Cypress.Commands.add('goHome', () => {
+Cypress.Commands.add('goHomee', () => {
   cy.openMenu();
   cy.get('#about_sidebar_link', { timeout: 10000 })
     .should('be.visible')
@@ -42,4 +42,13 @@ Cypress.Commands.add('validarAcessoNegadoInventory', () => {
   );
   cy.get('[data-test="username"]').should('be.visible');
   cy.url().should('include', '/');
+});
+
+
+Cypress.Commands.add('goHome', () => {
+cy.openMenu();
+cy.get('.bm-item-list a').contains('About').invoke('removeAttr', 'target').click({ force: true });
+cy.url({ timeout: 3000 }).should('include', 'about');
+cy.get('body', { timeout: 3000 }).should('not.have.class', 'loading');
+cy.get('main', { timeout: 3000 }).should('be.visible');
 });
